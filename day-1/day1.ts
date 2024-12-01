@@ -5,12 +5,12 @@ export async function day1()  {
     const allList = file.split('\n');
 
     // Get both the lists
-    const firstList: number[] = allList.map(p => parseInt(p.split("   ")[0]));
-    const secondList: number[] = allList.map(p => parseInt(p.split("   ")[1]));
+    const firstList: number[] = allList.map(p => parseInt(p.split("   ")[0])).filter((p) => !isNaN(p));
+    const secondList: number[] = allList.map(p => parseInt(p.split("   ")[1])).filter((p) => !isNaN(p));
 
     // Sort them
-    const filteredFirstList = firstList.toSorted((a, b) => a - b).filter((p) => !isNaN(p));
-    const filteredSecondList = secondList.toSorted((a, b) => a - b).filter((p) => !isNaN(p));
+    const filteredFirstList = firstList.toSorted((a, b) => a - b);
+    const filteredSecondList = secondList.toSorted((a, b) => a - b);
 
     // Find the difference
     let difference = 0;
