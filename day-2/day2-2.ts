@@ -1,4 +1,4 @@
-export async function day2() {
+export async function day2_2() {
   const path = "day-2/input.txt";
   const file = await Bun.file(path).text();
 
@@ -8,8 +8,20 @@ export async function day2() {
 
   for (const sequence of allList) {
     const parsedSequence = sequence.split(" ").map((p) => parseInt(p));
+
     if (isSafe(parsedSequence)) {
       safeCount++;
+      continue;
+    }
+
+    // Check for all variants
+    for (let i = 0; i < parsedSequence.length; i++) {
+      const checkSequence = parsedSequence.toSpliced(i, 1);
+
+      if (isSafe(checkSequence)) {
+        safeCount++;
+        break;
+      }
     }
   }
 
