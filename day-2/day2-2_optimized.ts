@@ -17,10 +17,10 @@ export async function day2_2_optimized() {
     }
 
     // Check for only the needed variants sorted in probability of appearance
-    // First we put the index and the index + 1, that are the most probable to appear
+    // First we put the index and the index + 1, that are the most probable to appear kinda equally
     // The only way to find a index - 1 is in the first index (0)
     // We put last the 0 because this is only 1 case, and the index (and +1) are N cases
-    const indexes = [safeInfo.index, safeInfo.index + 1, 0];
+    const indexes = [safeInfo.index + 1, safeInfo.index, 0];
 
     for (const i of indexes) {
       const checkSequence = parsedSequence.toSpliced(i, 1);
