@@ -1,25 +1,25 @@
-export async function day1()  {
-    const path = "day-1/input.txt";
-    const file = await Bun.file(path).text();
-    
-    const allList = file.split('\n');
+export async function day1() {
+  const path = "day-1/input.txt";
+  const file = await Bun.file(path).text();
 
-    // Get both the lists
-    const firstList: number[] = allList.map(p => parseInt(p.split("   ")[0])).filter((p) => !isNaN(p));
-    const secondList: number[] = allList.map(p => parseInt(p.split("   ")[1])).filter((p) => !isNaN(p));
+  const allList = file.split("\n");
 
-    // Sort them
-    const filteredFirstList = firstList.toSorted((a, b) => a - b);
-    const filteredSecondList = secondList.toSorted((a, b) => a - b);
+  // Get both the lists
+  const firstList: number[] = allList.map((p) => parseInt(p.split("   ")[0])).filter((p) => !isNaN(p));
+  const secondList: number[] = allList.map((p) => parseInt(p.split("   ")[1])).filter((p) => !isNaN(p));
 
-    // Find the difference
-    let difference = 0;
+  // Sort them
+  const filteredFirstList = firstList.toSorted((a, b) => a - b);
+  const filteredSecondList = secondList.toSorted((a, b) => a - b);
 
-    for (let i = 0; i < filteredFirstList.length; i++) {
-        const firstElement = filteredFirstList[i];
-        const secondElement = filteredSecondList[i];
-        difference += Math.abs(firstElement - secondElement);
-    }
+  // Find the difference
+  let difference = 0;
 
-    console.log(difference);
+  for (let i = 0; i < filteredFirstList.length; i++) {
+    const firstElement = filteredFirstList[i];
+    const secondElement = filteredSecondList[i];
+    difference += Math.abs(firstElement - secondElement);
+  }
+
+  console.log(difference);
 }
