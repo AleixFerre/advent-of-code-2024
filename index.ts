@@ -7,22 +7,29 @@ import { day3 } from "./day-3/day3";
 import { day3_2 } from "./day-3/day3-2";
 import { day4 } from "./day-4/day4";
 import { day4_2 } from "./day-4/day4-2";
+import { day5 } from "./day-5/day5";
+import { day5_2 } from "./day-5/day5-2";
 
 const daysFunctions: Function[][] = [
   [day1, day1_2],
   [day2, day2_2, day2_2_optimized],
   [day3, day3_2],
   [day4, day4_2],
+  [day5, day5_2],
 ];
 
 const dayStr = Bun.env.DAY!;
-
 const desiredDay = parseInt(dayStr) - 1;
+
+const TOTAL_TIME_LABEL = "Total time to complete";
+console.time(TOTAL_TIME_LABEL);
+
 if (0 <= desiredDay && desiredDay < daysFunctions.length) {
-  computeDay(desiredDay);
+  await computeDay(desiredDay);
 } else {
-  computeAllDays();
+  await computeAllDays();
 }
+console.timeEnd(TOTAL_TIME_LABEL);
 
 async function computeAllDays() {
   console.log("Computing all days");
