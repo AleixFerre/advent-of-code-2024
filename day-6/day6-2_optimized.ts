@@ -1,3 +1,5 @@
+import { day6 } from "./day6";
+
 export type Vector2 = [number, number];
 
 const DIRECTIONS: Vector2[] = [
@@ -7,7 +9,7 @@ const DIRECTIONS: Vector2[] = [
   [0, -1], // LEFT
 ];
 
-export async function day6_2() {
+export async function day6_2_optimized() {
   const path = "day-6/input.txt";
   const file = await Bun.file(path).text();
 
@@ -16,16 +18,16 @@ export async function day6_2() {
 
   let nLoop = 0;
 
-  for (let i = 0; i < matrix.length; i++) {
-    for (let j = 0; j < matrix[i].length; j++) {
-      if (matrix[i][j] === '#' || matrix[i][j] === '^') continue;
+  const visitedPositions = await day6();
 
-      const matrixCopy = [...matrix].map(p => [...p]);
-      matrixCopy[i][j] = '#';
+  // We only need to check for the positions that we already visitead
+  // The other positions do not have any impact on the result
+  for (const position of visitedPositions) {
+    const matrixCopy = [...matrix].map(p => [...p]);
+    matrixCopy[position[0]][position[1]] = '#';
 
-      if (hasLoop(matrixCopy, currentPos)) {
-        nLoop++;
-      }
+    if (hasLoop(matrixCopy, currentPos)) {
+      nLoop++;
     }
   }
 

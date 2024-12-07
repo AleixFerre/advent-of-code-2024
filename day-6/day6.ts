@@ -1,13 +1,10 @@
-interface Vector2 {
-  x: number;
-  y: number;
-}
+export type Vector2 = [number, number];
 
 const DIRECTIONS: Vector2[] = [
-  { x: -1, y: 0 }, // UP
-  { x: 0, y: 1 }, // RIGHT
-  { x: 1, y: 0 }, // DOWN
-  { x: 0, y: -1 }, // LEFT
+  [-1, 0], // UP
+  [0, 1], // RIGHT
+  [1, 0], // DOWN
+  [0, -1], // LEFT
 ];
 
 export async function day6() {
@@ -32,19 +29,20 @@ export async function day6() {
   }
 
   console.log(visitedPositions.size);
+  return [...visitedPositions].map(p => JSON.parse(p) as Vector2);
 }
 
 function findChar(matrix: string[][], searchChar: string): Vector2 {
   for (let i = 0; i < matrix.length; i++) {
     for (let j = 0; j < matrix[i].length; j++) {
       if (matrix[i][j] === searchChar) {
-        return { x: i, y: j };
+        return [i, j];
       }
     }
   }
 
   console.warn("Player not found. Wtf bro where you at??");
-  return { y: -1, x: -1 };
+  return [-1, -1];
 }
 
 function turn(currentIndex: number): number {
@@ -52,14 +50,14 @@ function turn(currentIndex: number): number {
 }
 
 function add(a: Vector2, b: Vector2): Vector2 {
-  return {
-    x: a.x + b.x,
-    y: a.y + b.y,
-  }
+  return [
+    a[0] + b[0],
+    a[1] + b[1]
+  ];
 }
 
 function isPosOutOfBounds(n: Vector2, min: number, max: number): boolean {
-  return isOutOfBounds(n.x, min, max) || isOutOfBounds(n.y, min, max);
+  return isOutOfBounds(n[0], min, max) || isOutOfBounds(n[1], min, max);
 }
 
 function isOutOfBounds(n: number, min: number, max: number): boolean {
@@ -67,5 +65,5 @@ function isOutOfBounds(n: number, min: number, max: number): boolean {
 }
 
 function cellInFront(matrix: string[][], currentPos: Vector2, direction: Vector2): string {
-  return matrix[currentPos.x + direction.x][currentPos.y + direction.y];
+  return matrix[currentPos[0] + direction[0]][currentPos[1] + direction[1]];
 }
