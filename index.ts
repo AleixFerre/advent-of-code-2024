@@ -10,7 +10,8 @@ import { day5 } from "./day-5/day5";
 import { day5_2 } from "./day-5/day5-2";
 import { day6 } from "./day-6/day6";
 import { day6_2_optimized } from "./day-6/day6-2_optimized";
-import { day6_2 } from "./day-6/day6-2";
+import { day7 } from "./day-7/day7";
+import { day7_2 } from "./day-7/day7-2";
 
 const daysFunctions: Function[][] = [
   [day1, day1_2],
@@ -19,6 +20,7 @@ const daysFunctions: Function[][] = [
   [day4, day4_2],
   [day5, day5_2],
   [day6, day6_2_optimized],
+  [day7, day7_2]
 ];
 
 const dayStr = Bun.env.DAY!;
