@@ -1,49 +1,63 @@
+class Vector2 {
+  x: number;
+  y: number;
+
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+
+  add(other: Vector2): Vector2 {
+    return new Vector2(this.x + other.x, this.y + other.y);
+  }
+}
+
+const DIRECTIONS: Vector2[] = [
+  new Vector2(0, -1),  // Top
+  new Vector2(1, 0),   // Right
+  new Vector2(0, 1),   // Bottom
+  new Vector2(-1, 0),  // Left
+];
+
+
 export async function day10() {
   const path = "day-10/input.txt";
   const file = await Bun.file(path).text();
 
-  const values = file.split("").map(p => parseInt(p));
+  const maze: number[][] = file.split('\n').map(p => p.split('').map(p => parseInt(p)));
 
-  const str: string[] = [];
-  const points: number[] = [];
+  const zeros: Vector2[] = [];
 
-  for (let i = 0; i < values.length; i++) {
-    const element = values[i];
-    if (i % 2 === 0) {
-      for (let j = 0; j < element; j++) {
-        str.push((i / 2).toString())
-      }
-    } else {
-      for (let j = 0; j < element; j++) {
-        str.push('.');
-        points.push(str.length - 1);
+  for (let i = 0; i < maze.length; i++) {
+    for (let j = 0; j < maze[i].length; j++) {
+      if (maze[i][j] === 0) {
+        zeros.push(new Vector2(i, j));
       }
     }
   }
 
-  let pointsIndex = 0;
-  for (let i = str.length - 1; i >= 0; i--) {
-    if (str[i] === '.') continue;
-    const currentPointIndex = points[pointsIndex];
-    if (currentPointIndex > i) break;
-    swapIndexes(str, i, currentPointIndex);
-    pointsIndex++;
-  }
-
   let total = 0;
 
-  for (let i = 0; i < str.length; i++) {
-    const num = str[i];
-    if (num === '.') break;
-    const parsedNum = parseInt(num);
-    total += i * parsedNum;
+  for (const zero of zeros) {
+    const mazeCopy = JSON.parse(JSON.stringify(maze));
+    const score = lookAround(zero, 0, mazeCopy);
+    total += score;
   }
 
   console.log(total);
 }
 
-function swapIndexes(str: string[], i1: number, i2: number): void {
-  const auxA = str[i1];
-  str[i1] = str[i2];
-  str[i2] = auxA;
+function lookAround(pos: Vector2, depth: number, maze: number[][]): number {
+  if (maze[pos.x]?.[pos.y] !== depth) return 0;
+
+  if (maze[pos.x][pos.y] === 9) {
+    maze[pos.x][pos.y] = -1;
+    return 1;
+  }
+
+  let total = 0;
+  for (const direction of DIRECTIONS) {
+    total += lookAround(pos.add(direction), depth + 1, maze);
+  }
+  return total;
 }

@@ -1,81 +1,63 @@
+class Vector2 {
+  x: number;
+  y: number;
+
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+
+  add(other: Vector2): Vector2 {
+    return new Vector2(this.x + other.x, this.y + other.y);
+  }
+}
+
+const DIRECTIONS: Vector2[] = [
+  new Vector2(0, -1),  // Top
+  new Vector2(1, 0),   // Right
+  new Vector2(0, 1),   // Bottom
+  new Vector2(-1, 0),  // Left
+];
+
+
 export async function day10_2() {
   const path = "day-10/input.txt";
   const file = await Bun.file(path).text();
 
-  const values = file.split("").map(p => parseInt(p));
+  const maze: number[][] = file.split('\n').map(p => p.split('').map(p => parseInt(p)));
 
-  const str: string[] = [];
-  const points: number[][] = [];
+  const zeros: Vector2[] = [];
 
-  for (let i = 0; i < values.length; i++) {
-    const element = values[i];
-    if (i % 2 === 0) {
-      for (let j = 0; j < element; j++) {
-        str.push((i / 2).toString());
+  for (let i = 0; i < maze.length; i++) {
+    for (let j = 0; j < maze[i].length; j++) {
+      if (maze[i][j] === 0) {
+        zeros.push(new Vector2(i, j));
       }
-    } else {
-      const currentPoints = [];
-      for (let j = 0; j < element; j++) {
-        currentPoints.push(str.length);
-        str.push('.');
-      }
-      if (currentPoints.length) points.push(currentPoints);
-    }
-  }
-
-  console.log(str);
-
-  let currentStr = str[str.length - 1];
-
-  for (let i = str.length - 1; i > 0; i--) {
-    if (str[i] === currentStr[0]) {
-      currentStr += str[i];
-    } else {
-      if (currentStr[0] !== '.') {
-        console.log(currentStr.length);
-
-        const slotIndex = findFirstFittedSlot(points, currentStr.length);
-        if (slotIndex !== null) {
-          if (points[slotIndex][0] > i) break;
-
-          for (let j = 0; j < currentStr.length; j++) {
-            const swapIndex = points[slotIndex][j];
-            // console.log(str[i + j + 1], i + j + 1);
-            swapIndexes(str, swapIndex, i + j + 1);
-          }
-
-          // Remove the used points from the array for future iterations
-          points[slotIndex].splice(0, currentStr.length);
-        }
-      }
-
-      currentStr = str[i];
     }
   }
 
   let total = 0;
-  console.log(str);
 
-  for (let i = 0; i < str.length; i++) {
-    const num = str[i];
-    if (num === '.') continue;
-    const parsedNum = parseInt(num);
-    total += i * parsedNum;
+  for (const zero of zeros) {
+    const mazeCopy = JSON.parse(JSON.stringify(maze));
+    const score = lookAround(zero, 0, mazeCopy);
+    total += score;
   }
 
   console.log(total);
 }
 
-function swapIndexes(str: string[], i1: number, i2: number): void {
-  const auxA = str[i1];
-  str[i1] = str[i2];
-  str[i2] = auxA;
-}
+function lookAround(pos: Vector2, depth: number, maze: number[][]): number {
+  if (maze[pos.x]?.[pos.y] !== depth) return 0;
 
-function findFirstFittedSlot(points: number[][], sizeToFit: number): number | null {
-  for (let i = 0; i < points.length; i++) {
-    if (points[i].length >= sizeToFit) return i;
+  if (maze[pos.x][pos.y] === 9) {
+    // maze[pos.x][pos.y] = -1;
+    return 1;
   }
 
-  return null;
+  let total = 0;
+  for (const direction of DIRECTIONS) {
+    total += lookAround(pos.add(direction), depth + 1, maze);
+  }
+  return total;
 }
