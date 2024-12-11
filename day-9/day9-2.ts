@@ -23,29 +23,42 @@ export async function day9_2() {
     }
   }
 
-  console.log(str.join(''));
-  console.log(points);
+  console.log(str);
 
   let currentStr = str[str.length - 1];
-  for (let i = str.length - 1; i >= 0; i--) {
-    if (str[i] === '.') continue;
+
+  for (let i = str.length - 1; i > 0; i--) {
     if (str[i] === currentStr[0]) {
       currentStr += str[i];
     } else {
-      console.log(currentStr.length);
+      if (currentStr[0] !== '.') {
+        console.log(currentStr.length);
+
+        const slotIndex = findFirstFittedSlot(points, currentStr.length);
+        if (slotIndex !== null) {
+          if (points[slotIndex][0] > i) break;
+
+          for (let j = 0; j < currentStr.length; j++) {
+            const swapIndex = points[slotIndex][j];
+            // console.log(str[i + j + 1], i + j + 1);
+            swapIndexes(str, swapIndex, i + j + 1);
+          }
+
+          // Remove the used points from the array for future iterations
+          points[slotIndex].splice(0, currentStr.length);
+        }
+      }
 
       currentStr = str[i];
     }
   }
 
-
-  console.log(str.join(''));
-
   let total = 0;
+  console.log(str);
 
   for (let i = 0; i < str.length; i++) {
     const num = str[i];
-    if (num === '.') break;
+    if (num === '.') continue;
     const parsedNum = parseInt(num);
     total += i * parsedNum;
   }
@@ -57,4 +70,12 @@ function swapIndexes(str: string[], i1: number, i2: number): void {
   const auxA = str[i1];
   str[i1] = str[i2];
   str[i2] = auxA;
+}
+
+function findFirstFittedSlot(points: number[][], sizeToFit: number): number | null {
+  for (let i = 0; i < points.length; i++) {
+    if (points[i].length >= sizeToFit) return i;
+  }
+
+  return null;
 }
