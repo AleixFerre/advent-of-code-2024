@@ -21,21 +21,19 @@ export async function day9() {
     }
   }
 
-  let checksumStr = [...str];
-
   let pointsIndex = 0;
-  for (let i = checksumStr.length - 1; i >= 0; i--) {
-    if (checksumStr[i] === '.') continue;
+  for (let i = str.length - 1; i >= 0; i--) {
+    if (str[i] === '.') continue;
     const currentPointIndex = points[pointsIndex];
     if (currentPointIndex > i) break;
-    checksumStr = swapIndexes(checksumStr, i, currentPointIndex);
+    swapIndexes(str, i, currentPointIndex);
     pointsIndex++;
   }
 
   let total = 0;
 
-  for (let i = 0; i < checksumStr.length; i++) {
-    const num = checksumStr[i];
+  for (let i = 0; i < str.length; i++) {
+    const num = str[i];
     if (num === '.') break;
     const parsedNum = parseInt(num);
     total += i * parsedNum;
@@ -44,9 +42,8 @@ export async function day9() {
   console.log(total);
 }
 
-function swapIndexes(str: string[], i1: number, i2: number): string[] {
-  const strCopy = [...str];
-  strCopy[i1] = str[i2];
-  strCopy[i2] = str[i1];
-  return strCopy;
+function swapIndexes(str: string[], i1: number, i2: number): void {
+  const auxA = str[i1];
+  str[i1] = str[i2];
+  str[i2] = auxA;
 }
