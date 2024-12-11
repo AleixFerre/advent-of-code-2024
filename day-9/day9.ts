@@ -4,42 +4,44 @@ export async function day9() {
 
   const values = file.split("").map(p => parseInt(p));
 
-  let str = '';
+  const str: string[] = [];
+  const points: number[] = [];
 
   for (let i = 0; i < values.length; i++) {
     const element = values[i];
     if (i % 2 === 0) {
-      str += multString((i / 2).toString(), element);
+      for (let j = 0; j < element; j++) {
+        str.push((i / 2).toString())
+      }
     } else {
-      str += multString('.', element);
+      for (let j = 0; j < element; j++) {
+        str.push('.');
+        points.push(str.length - 1);
+      }
     }
   }
 
-  let checksumStr = str.split('');
+  let checksumStr = [...str];
+
+  let pointsIndex = 0;
+  for (let i = checksumStr.length - 1; i >= 0; i--) {
+    if (checksumStr[i] === '.') continue;
+    const currentPointIndex = points[pointsIndex];
+    if (currentPointIndex > i) break;
+    checksumStr = swapIndexes(checksumStr, i, currentPointIndex);
+    pointsIndex++;
+  }
+
+  let total = 0;
 
   for (let i = 0; i < checksumStr.length; i++) {
-    const char = checksumStr[i];
-    if (char === '.') {
-      const lastIndex = checksumStr.length - i - 1;
-      if (checksumStr[lastIndex] === '.') continue;
-      if (i > lastIndex) break;
-
-      checksumStr = swapIndexes(checksumStr, i, lastIndex);
-    }
+    const num = checksumStr[i];
+    if (num === '.') break;
+    const parsedNum = parseInt(num);
+    total += i * parsedNum;
   }
 
-  console.log(checksumStr.join(''));
-  console.log('0099811188827773336446555566..............');
-}
-
-function multString(str: string, times: number): string {
-  let finalStr = '';
-
-  for (let i = 0; i < times; i++) {
-    finalStr += str;
-  }
-
-  return finalStr;
+  console.log(total);
 }
 
 function swapIndexes(str: string[], i1: number, i2: number): string[] {
